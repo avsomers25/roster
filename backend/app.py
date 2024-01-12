@@ -2,6 +2,7 @@ import datetime
 import os
  
 from flask import Flask, Response, request
+from flask import jsonify
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 
@@ -30,17 +31,19 @@ class Roster(db.Document):
 
 @app.route("/api")
 def index():
-    todos = Roster.objects().to_json()
+    todos = Roster.objects().only('first').only('last').only('major').only('gradyear').to_json()
     return Response(todos, mimetype="application/json", status=200)
 
 @app.route("/add/<first_name>/<last_name>/<given_major>/<given_gradyear>")
 def add(first_name, last_name, given_major, given_gradyear):
+    print("ADDING")
     Roster(first = str(first_name), last = str(last_name), major = str(given_major), gradyear = (given_gradyear)).save()
     return Response(status=200)
 
 @app.route("/remove/<first_name>/<last_name>/<given_major>/<given_gradyear>")
 def remove(first_name, last_name, given_major, given_gradyear):
-    (Roster(first = str(first_name), last = str(last_name), major = str(given_major), gradyear = (given_gradyear))).delete()
+    print("REMOVING")
+    Roster.objects(first = str(first_name), last = str(last_name), major = str(given_major), gradyear = (given_gradyear)).delete()
     return Response(status=200)
 
 @app.route("/majors")
@@ -48,18 +51,20 @@ def majors():
     majors_dict = {}
     unique = Roster.objects.distinct(field="major")
     for i in unique:
-        majors_dict[i] = Roster(major = i).count()
+        majors_dict[i] = Roster.objects(major = i).count()
 
-    return majors_dict
+    resp = jsonify([majors_dict])
+    return resp
 
 @app.route("/gradyear")
 def grads():
     grads_dict = {}
     unique = Roster.objects.distinct(field="gradyear")
     for i in unique:
-        grads_dict[i] = Roster(grasyear = i).count()
+        grads_dict[i] = Roster.objects(gradyear = i).count()
 
-    return grads_dict
+    resp = jsonify([grads_dict])
+    return resp
 
 
 

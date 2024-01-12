@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 
 
-const AddForm: React.FC = () => {
+const RemoveForm: React.FC = () => {
   const [first, setfirst] = React.useState('');
   const [last, setlast] = React.useState('');
   const [major, setmajor] = React.useState('');
@@ -14,7 +14,7 @@ const AddForm: React.FC = () => {
     console.log('last:', last);
     console.log('major:', major);
     console.log('grad:', grad);
-    axios.get(`http://localhost:5000/add/${first}/${last}/${major}/${grad}`);
+    axios.get(`http://localhost:5000/remove/${first}/${last}/${major}/${grad}`);
   };
 
   
@@ -37,9 +37,9 @@ const AddForm: React.FC = () => {
         Grad Year:
         <input type="text" value={grad} onChange={(event) => setgrad(event.target.value)} />
       </label>
-      <button type="submit">Add</button>
+      <button type="submit">Remove</button>
     </form>
   );
 };
 
-export default AddForm;
+export default RemoveForm;
