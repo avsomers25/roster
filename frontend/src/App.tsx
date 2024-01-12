@@ -1,6 +1,4 @@
 import './App.css'
-import AddForm from './form';
-import RemoveForm from './remove'
 import axios from 'axios';
 import React from 'react';
 import JsonTable from 'ts-react-json-table';
